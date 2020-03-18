@@ -1,0 +1,94 @@
+## Завдання 1. Перетворити кожен елемент `str_vec` в число, "double", за допомогою цикла `for`. В результаті має вийти вектор не з рядками, а з числами: `c(1.19, 6.24, 1.68 …)`
+Як???
+  1. Створити новий пустий вектор, у якому будемо зберігати перетворені числа `double_vec <- c()`
+2. Пройти по всім елементам вектора ´`str_vec` за допомогою *циклу* `for (e in vvv) { … }`
+3. У тілі циклу (`{ … }` на місці 3-х крапок) перетворити елемент в число. Там же, всередині циклу, не забудьте, що виконання якоїсь функції до елемента не перетворює його, результат перетворення треба зберегти у змінній
+4. У тілі циклу додати перетворений число до нового вектора з перетвореними числами `double_vec`. Як це зробити — пошукайте англійською, накшталт «R how to append item to vector», https://stackoverflow.com — ваш кращий друг у світі програмування
+
+```{r}
+# do it here
+double_vec <- c()
+for (i in str_vec){
+  number <-as.double(i)
+  double_vec <- c (double_vec,number)
+}
+print(double_vec)
+
+> print(double_vec)
+ [1] 0.40 0.77 1.10 1.19 1.68 2.48 2.55 2.66 3.56 3.85 4.22 4.44 4.44 4.47 4.48 4.50 4.67 4.74 5.20 5.66 6.24 7.16
+[23] 7.43 8.43 8.93
+
+## Завдання 2. З векторизацією простіше: перетворіть `str_vec` на числовий вектор в 1 рядок коду
+Застосуйте перетворюючу фенкцію `as.…` до всього вектора
+```{r}
+str_vec <- as.numeric(str_vec)
+class(str_vec)
+print(str_vec)
+```
+
+## Завдання 3. Перевірте, що тепер з елементами перетвореного вектора можна здійснювати арифметичні операції
+Знайдіть суму, середнє, медіану, стандартне відхилення (standart deviation) вектора
+```{r}
+sum(str_vec)
+mean(str_vec)
+median(str_vec)
+sd(str_vec)
+```
+
+> sum(str_vec)
+[1] 105.25
+> mean(str_vec)
+[1] 4.21
+> median(str_vec)
+[1] 4.44
+> sd(str_vec)
+[1] 2.304257
+
+### Завдання 4
+(спочатку запустіть весь код в цьому блоці — це завантаження даних)
+```{r}
+library(tidyverse)    # встановіть пакет, якщо бачите помилку, що його нема: install.packages("tidyverse")
+url <- "https://disp.ua.energy/datagov/dg_year.csv"
+df <- read.csv(url(url), fileEncoding="UTF-8")    # to read data from web 
+df$Дата <- as.POSIXct(df$Дата, format = "%d.%m.%Y %H:%M:%S")    # date column as date, not as character
+head(df)
+```
+install.packages(tidyverse)
+library(tidyverse”)
+mean(df$Споживання)
+median(df$Споживання)
+sd(df$Споживання)
+
+Я так розумію, тут має бути такий код, як я написав вище, але в мене вибиває деілька помилок:
+
+> df$Дата <- as.POSIXlt(df$Дата, format = "%d.%m.%Y %H:%M:%S")    # date column as date, not as character
+Ошибка в as.POSIXlt.default(df$Дата, format = "%d.%m.%Y %H:%M:%S") :
+  не знаю как конвертировать 'df$Дата' в класс “POSIXlt”
+
+> install.packages("tidyverse")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+Installing package into ‘C:/Users/Maks/Documents/R/win-library/3.6’
+(as ‘lib’ is unspecified)
+пробую URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/tidyverse_1.3.0.zip'
+Content type 'application/zip' length 440114 bytes (429 KB)
+downloaded 429 KB
+
+package ‘tidyverse’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Maks\AppData\Local\Temp\RtmpCeQlwS\downloaded_packages
+
+> library(tidyverse)    # встановіть пакет, якщо бачите помилку, що його нема: install.packages("tidyverse")
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.2.1     v purrr   0.3.3
+v tibble  2.1.3     v dplyr   0.8.4
+v tidyr   1.0.2     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.4.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Предупреждение:
+пакет ‘tidyverse’ был собран под R версии 3.6.3 
+
