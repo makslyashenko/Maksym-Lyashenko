@@ -92,3 +92,20 @@ x dplyr::lag()    masks stats::lag()
 Предупреждение:
 пакет ‘tidyverse’ был собран под R версии 3.6.3 
 
+код до html:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>hello</title>
+</head>
+<body>
+
+<h1>how are you</h1>
+<h2>I'm fine. <a href="https://www.w3schools.com/html/default.asp">Copy</a></h2>
+<p>Cool</p>
+
+<img src="D:\Maks123\Фото\Універ\1RU4XmidnL8.jpg" alt="haha" height="100" width="100"> 
+
+</body>
+</html>
