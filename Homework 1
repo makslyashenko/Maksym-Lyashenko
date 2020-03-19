@@ -59,12 +59,24 @@ mean(df$Споживання)
 median(df$Споживання)
 sd(df$Споживання)
 
-Я так розумію, тут має бути такий код, як я написав вище, але в мене вибиває деілька помилок:
-
-> df$Дата <- as.POSIXlt(df$Дата, format = "%d.%m.%Y %H:%M:%S")    # date column as date, not as character
-Ошибка в as.POSIXlt.default(df$Дата, format = "%d.%m.%Y %H:%M:%S") :
-  не знаю как конвертировать 'df$Дата' в класс “POSIXlt”
-
+> url <- "https://disp.ua.energy/datagov/dg_year.csv"
+> df <- read.csv(url(url), encoding = "UTF-8")    # to read data from web 
+> df$Дата <- as.POSIXct(df$Дата, format = "%d.%m.%Y %H:%M:%S")    # date column as date, not as character
+> head(df)
+                 Дата   АЕС ТЕЦ Генерація.з.ВДЕ  ТЕС ГЕС ГАЕС.генерація. Споживання ГАЕС.закачка.
+1 2020-01-01 01:00:00 10808 909             775 4272 337               0      16150          -814
+2 2020-01-01 02:00:00 10791 915             774 4200  72               0      15466          -991
+3 2020-01-01 03:00:00 10803 890             730 4069  72               0      15062         -1073
+4 2020-01-01 04:00:00 10747 891             715 3878  72               0      14549         -1163
+5 2020-01-01 05:00:00 10236 892             687 3876  72               0      14397         -1156
+6 2020-01-01 06:00:00 10208 888             691 3868 335               0      14461          -934
+  Україна...Білорусь.РФ Україна...ЄС Україна...Молдова Бурштинський.енергоострів
+1                   188         -278               -47                       749
+2                     4         -268               -31                       699
+3                   -81         -316               -32                       687
+4                  -237         -342               -12                       658
+5                   131         -341                 0                       646
+6                  -252         -340                -3                       653
 > install.packages("tidyverse")
 WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
 
@@ -78,9 +90,8 @@ downloaded 429 KB
 package ‘tidyverse’ successfully unpacked and MD5 sums checked
 
 The downloaded binary packages are in
-	C:\Users\Maks\AppData\Local\Temp\RtmpCeQlwS\downloaded_packages
-
-> library(tidyverse)    # встановіть пакет, якщо бачите помилку, що його нема: install.packages("tidyverse")
+	C:\Users\Maks\AppData\Local\Temp\RtmpeSrqQS\downloaded_packages
+> library(tidyverse)
 -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 v ggplot2 3.2.1     v purrr   0.3.3
 v tibble  2.1.3     v dplyr   0.8.4
@@ -91,6 +102,12 @@ x dplyr::filter() masks stats::filter()
 x dplyr::lag()    masks stats::lag()
 Предупреждение:
 пакет ‘tidyverse’ был собран под R версии 3.6.3 
+> mean(df$Споживання)
+[1] 17915.48
+> median(df$Споживання)
+[1] 18060.5
+> sd(df$Споживання)
+[1] 1940.294
 
 код до html:
 
