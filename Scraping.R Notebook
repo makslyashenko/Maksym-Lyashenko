@@ -43,14 +43,12 @@ read.csv("detector.media.csv")
 ```{r}
 npages <- 31  
 
-?progress_bar# скільки сторінок скрейпити
+?progress_bar
 
 pb <- progress_bar$new(
   format = "  downloading [:bar] :percent in :elapsed ",
   total = npages, clear = FALSE, width= 60)
-# скопіювала з довідки про progress_bar, змінено лише параметр total
 
-# Вектори, у яких будемо зберігати значення
 dates <- c()
 titles <- c()
 links <- c()
@@ -60,18 +58,16 @@ url_template <- "https://detector.media/type/1/2020-03-"
 
 ```{r}
 for (page in 0:npages) {
-  # з'єднуємо рядки: основу url-адреси, № сторінки помножений на 10, бо сторінки йдуть з кроком 10
   url <- str_c(url_template,
                page - 1 )
   
   content <- read_html(url)
   
-  # Копіпаст коду для першої сторінки
   titles <- content %>%
     html_nodes('div.news_blkPostTitle') %>%
     html_text() %>%
     str_trim() %>%
-    c(titles, .)    # "." крапка означає змінну в пайпі, якщо пона не на першому місці 
+    c(titles, .)   
   
   dates <- content %>%
     html_nodes('div.news_blkPostDate') %>%
@@ -79,28 +75,26 @@ for (page in 0:npages) {
     str_trim()  %>%
     c(dates, .)
   
-  # ще додамо лінки. Тут вибираємо не текст, а атрибут "href" тега "<a>" — лінк
   links <- content %>%
     html_nodes('div.news_blkPostTitle a') %>%
     html_attr("href") %>%
     c(links, .)
   
-  # Ще один важливий крок: затримка між запитами, щоб не зробити DDoS-атаку на сайт
-  Sys.sleep(3)    # 2 секунди програма буде "спати" 
+  Sys.sleep(3)    
   
   # pb$tick()
 }
 ```
 
 ```{r}
-# датафрейм через пайп одразу йде на зберігання
+
 data.frame(title = titles,
            date = dates,
            link = links) %>%
-  write.csv("detector.media.csv",
-            row.names = FALSE) # щоб не зберігати непотрібну колонку номерів рядків
+  write.csv("detector.media.csv", fileEncoding = "UTF-8",
+            row.names = FALSE) 
 ```
 ```{r}
-df <- read.csv ("detector.media.csv") 
+df <- read.csv ("detector.media.csv", fileEncoding = "UTF-8") 
 df
 ```
