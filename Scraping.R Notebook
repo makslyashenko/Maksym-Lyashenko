@@ -41,7 +41,7 @@ read.csv("detector.media.csv")
 ```
 
 ```{r}
-npages <- 34  
+npages <- 31  
 
 ?progress_bar# скільки сторінок скрейпити
 
