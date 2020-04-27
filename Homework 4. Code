@@ -1,0 +1,113 @@
+```{r}
+library(tidyverse)
+library(lubridate)
+library(rvest)
+
+```
+```{r}
+air <- read_html("https://www.radarbox.com/statistics/total") %>%
+  html_node("table#datatable") %>%
+  html_table() %>%
+rename(date = Day)
+
+colnames(air) <- colnames(air) %>%
+  str_replace("  ", "_") %>%
+  str_replace(" ", ".") %>%
+  str_to_lower()
+```
+```{r}
+planes <- air %>%
+  mutate(date = as.Date(date)) %>%
+  group_by(week(date))
+
+planes
+```
+```{r}
+planes <- planes %>%
+  select(date,"brazil_non.brazil") 
+
+planes
+```
+```{r}
+planes <- planes %>%
+  arrange(date)
+ 
+planes
+```
+```{r}
+planes$year = as.double(format(planes$date,'%Y')) 
+planes$month = as.double(format(planes$date,'%m'))
+planes$day = as.double(format(planes$date,'%d'))
+
+planes[c("date","year","month", "day")]
+```
+```{r}
+planes <- planes %>%
+  group_by(month, day) %>%
+  filter(n() == 2) %>%
+  ungroup ()
+
+planes
+```
+```{r}
+big_df <- planes %>% 
+pivot_wider(id_cols = c("day","month"),
+              names_from = "year",
+              values_from = "brazil_non.brazil",
+              names_prefix = "y")
+
+big_df
+```
+```{r}
+big_df <- big_df %>% 
+  mutate(flights = y2020/y2019,
+       date = str_c("2020", month, day, sep="_"),
+       date = ymd(date))
+
+big_df
+```
+```{r}
+prepare_covid <- function(url, col_name) {
+  d <- read.csv(url) %>%
+    rename(region = Province.State, country = Country.Region) %>%
+    pivot_longer(cols = -c(region, country, Lat, Long),
+                 names_to = "date",
+                 names_prefix = "X",
+                 values_to = col_name
+                 ) %>%
+    mutate(date = mdy(date)) %>%
+    select(-c(Lat, Long)) %>%
+    group_by(country, date) %>%
+    summarise(col_name = sum(get(col_name)))
+  
+  cnames <- colnames(d)
+  cnames[cnames == "col_name"] <- col_name
+  colnames(d) <- cnames
+  return(d)
+}
+covid19 <- prepare_covid("https://bit.ly/3aLLfKw", "cases") %>%
+  full_join(prepare_covid("https://bit.ly/2XdZ6W0", "recovered")) %>%
+  full_join(prepare_covid("https://bit.ly/2yEhPQg", "deaths")) %>%
+  mutate(active_cases = cases - recovered - deaths,
+         date = as.Date(date))
+covid19
+```
+```{r}
+infection_df <- covid19 %>% 
+ filter(country == "Brazil") 
+
+infection_df
+```
+```{r}
+joined_df <-infection_df %>%
+ filter(country == "Brazil") %>%
+ full_join(big_df, by = c("date")) 
+ 
+joined_df
+```
+```{r}
+write.csv(joined_df,"homework4.csv")
+```
+```{r}
+read.csv("homework4.csv")
+```
