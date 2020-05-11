@@ -1,0 +1,49 @@
+```{r}
+library(rvest)   
+library(tidyverse)
+library(progress)
+library(ggplot2)
+library(lubridate)
+library(scales)
+```
+
+```{r}
+url <- "https://osvita.ua/school/rating/61682/"
+
+top200 <- read_html(url, as.data.frame=T, stringsAsFactors = TRUE)
+
+top200 %>%  
+        html_nodes("table.w620") %>%
+.[[1]] %>% 
+        
+        html_table(fill=T) -> top_200
+       
+View(top_200)
+
+write.csv(top_200, "top200.csv")
+```
+
+```{r}
+top_200$`Назва навчального закладу` <- 
+  str_extract("НВК|ЗОШ|[Лл]іцей|[Гг]імназія|[Іі]нтернат")
+
+top_200 %>%
+  group_by(school_type) %>%
+  summarise(mean(`Бал ЗНО`)) 
+```
+```{r}
+ggplot(top_200) + geom_line(aes(x=school_type, y=mean(`Бал ЗНО`))) + geom_smooth(aes(x=school_type, y=mean(`Бал ЗНО`))) + expand_limits(y = c(165, 170))
+  
+```
+
+```{r}
+ggplot(top_200, aes(x=school_type, y=mean(`Бал ЗНО`)) + 
+        geom_line() +
+        geom_smooth(method="loess")
+```
+
+
+
+```{r}
+schools <- read.csv ('D:/Maks123/Уку/2 семестр/візуалізація даних/дані/schools.csv')
+```
